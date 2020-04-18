@@ -34,21 +34,21 @@
     </v-app-bar>
 
     <v-content>
-      <TestComponent />
+      <Main />
     </v-content>
   </v-app>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-//import HelloWorld from "./components/HelloWorld.vue";
-import TestComponent from "./components/TestComponent.vue";
+import Main from "./components/Main.vue";
+//import TestComponent from "./components/TestComponent.vue";
 
 export default Vue.extend({
   name: "App",
 
   components: {
-    TestComponent
+    Main
   },
 
   data: () => ({
