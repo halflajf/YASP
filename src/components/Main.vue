@@ -58,7 +58,7 @@
             color="brown"
             v-on:click="commitNote(createNote())"
           >
-            Add new note
+            Generate random note
           </b-button>
           <br />
           <br />
@@ -88,6 +88,127 @@
                 </div>
 
                 <span>Notes goes here!</span>
+
+                //////////////////////////////////////////////////////////
+
+                <div id="my-container">
+                  <div class="my-3">
+                    <!-- Our triggering (target) element -->
+                    <b-button
+                      id="popover-reactive-1"
+                      variant="primary"
+                      ref="button"
+                    >
+                      Add new note (will be on top)
+                    </b-button>
+                  </div>
+
+                  <!-- Output from the popover interaction -->
+                  <b-card
+                    title="Returned values:"
+                    v-if="input1Return && input2Return"
+                  >
+                    <p class="card-text" style="max-width: 20rem;">
+                      Name: <strong>{{ input1Return }}</strong
+                      ><br />
+                      Content: <strong>{{ input2Return }}</strong>
+                    </p>
+                  </b-card>
+
+                  <!-- Our popover title and content render container -->
+                  <!-- We use placement 'auto' so popover fits in the best spot on viewport -->
+                  <!-- We specify the same container as the trigger button, so that popover is close to button -->
+                  <b-popover
+                    target="popover-reactive-1"
+                    triggers="click"
+                    :show.sync="popoverShow"
+                    placement="auto"
+                    container="my-container"
+                    ref="popover"
+                    @show="onShow"
+                    @shown="onShown"
+                    @hidden="onHidden"
+                  >
+                    <template v-slot:title>
+                      <b-button
+                        @click="onClose"
+                        class="close"
+                        aria-label="Close"
+                      >
+                        <span class="d-inline-block" aria-hidden="true"
+                          >&times;</span
+                        >
+                      </b-button>
+                      New note
+                    </template>
+
+                    <div>
+                      <b-form-group
+                        label="Title"
+                        label-for="popover-input-1"
+                        label-cols="3"
+                        :state="input1state"
+                        class="mb-1"
+                        invalid-feedback="This field is required"
+                      >
+                        <b-form-input
+                          ref="input1"
+                          id="popover-input-1"
+                          v-model="input1"
+                          :state="input1state"
+                          size="sm"
+                        ></b-form-input>
+                      </b-form-group>
+
+                      <b-form-group
+                        label="Content"
+                        label-for="popover-input-2"
+                        label-cols="3"
+                        :state="input1state"
+                        class="mb-2"
+                      >
+                        <b-form-input
+                          ref="input2"
+                          id="popover-input-2"
+                          v-model="input2"
+                          :state="input2state"
+                          size="sm"
+                        >
+                        </b-form-input>
+                      </b-form-group>
+
+                      <!--
+        <b-form-group
+          label="Date"
+          label-for="datepicker-sm"
+          label-cols="3"
+          :state="input2state"
+          class="mb-2"
+          description="Pick a color"
+          invalid-feedback="This field is required"
+        >
+            <b-form-datepicker 
+              ref="input2"
+              v-model="input2"
+              id="datepicker-sm" 
+              size="sm" 
+              local="en" 
+              class="mb-2"
+              :state="input2state">            
+            </b-form-datepicker>
+        </b-form-group>
+-->
+
+                      <b-button @click="onClose" size="sm" variant="danger"
+                        >Cancel</b-button
+                      >
+                      <b-button @click="onOk" size="sm" variant="primary"
+                        >Ok</b-button
+                      >
+                    </div>
+                  </b-popover>
+                </div>
+                /////////////////////////////////////////
               </template>
             </v-tooltip>
           </v-flex>
@@ -125,9 +246,31 @@ export default Vue.extend({
         { icon: "fa-search", text: "Notes" },
         { divider: true },
         { heading: "Labels" }
-      ]
+      ],
+
+      input1: "",
+      input1state: null,
+      input2: "",
+      input2state: null,
+      input1Return: "",
+      input2Return: "",
+      popoverShow: false
     };
   },
+
+  watch: {
+    input1(val) {
+      if (val) {
+        this.input1state = true;
+      }
+    },
+    input2(val) {
+      if (val) {
+        this.input2state = true;
+      }
+    }
+  },
+
   computed: {
     ...mapGetters([
       "notes",
@@ -177,6 +320,55 @@ export default Vue.extend({
     },
     getNotesByTagsStrict(tags: string) {
       this.groupResults = this.groupByTagsStrict(tags.split(","));
+    },
+
+    onClose() {
+      this.popoverShow = false;
+    },
+    onOk() {
+      if (!this.input1) {
+        this.input1state = false;
+      }
+      if (!this.input2) {
+        this.input2state = false;
+      }
+      if (this.input1 && this.input2) {
+        this.onClose();
+        // Return our popover form results
+        this.input1Return = this.input1;
+        this.input2Return = this.input2;
+      }
+    },
+    onShow() {
+      // This is called just before the popover is shown
+      // Reset our popover form variables
+      this.input1 = "";
+      this.input2 = "";
+      this.input1state = null;
+      this.input2state = null;
+      this.input1Return = "";
+      this.input2Return = "";
+    },
+    onShown() {
+      // Called just after the popover has been shown
+      // Transfer focus to the first input
+      this.focusRef(this.$refs.input1);
+    },
+    onHidden() {
+      // Called just after the popover has finished hiding
+      // Bring focus back to the button
+      this.focusRef(this.$refs.button);
+    },
+    focusRef(ref) {
+      // Some references may be a component, functional component, or plain element
+      // This handles that check before focusing, assuming a `focus()` method exists
+      // We do this in a double `$nextTick()` to ensure components have
+      // updated & popover positioned first
+      this.$nextTick(() => {
+        this.$nextTick(() => {
+          (ref.$el || ref).focus();
+        });
+      });
     }
   }
 });
