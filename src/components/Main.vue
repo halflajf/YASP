@@ -3,10 +3,11 @@
     <v-app id="inspire">
       <v-app-bar app clipped-left color="#ece5d3">
         <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+
         <span class="title ml-3 mr-5"
           ><img height="25px" src="../assets/yasp_logo.png"
         /></span>
-
+        <pre></pre>
         <v-text-field
           solo-inverted
           flat
@@ -14,12 +15,16 @@
           label="Search"
           v-model="searchPhrase"
         ></v-text-field>
-        <button
-          style="border: 1px solid black; margin: 5px; padding: 5px;"
+        <pre></pre>
+        <v-btn
+          color="#171733"
+          dark
+          large
           v-on:click="searchNotes(searchPhrase)"
         >
           SEARCH
-        </button>
+        </v-btn>
+        <pre></pre>
       </v-app-bar>
 
       <v-navigation-drawer v-model="drawer" app clipped color="grey lighten-4">
@@ -86,17 +91,38 @@
                         When created: {{ note.whenCreated }}<br />
                         When edited: {{ note.whenEdited }}<br />
                       </b-card-text>
+                      <div align="right">
+                        <v-btn
+                          color="#171733"
+                          fab
+                          dark
+                          v-on:click="commitEditNote()"
+                        >
+                          <v-icon>mdi-pencil</v-icon>
+                        </v-btn>
+                      </div>
 
                       <template v-slot:footer>
-                        <small class="text-muted"
-                          >Last updated 3 mins ago</small
-                        >
+                        <div align="left">
+                          <v-btn
+                            color="#171733"
+                            fab
+                            dark
+                            small
+                            v-on:click="commitDeleteNote()"
+                          >
+                            <v-icon>mdi-delete</v-icon>
+                          </v-btn>
+                        </div>
+                        <div align="right">
+                          <small class="text-muted"
+                            >Last updated 3 mins ago</small
+                          >
+                        </div>
                       </template>
                     </b-card>
                   </b-card-group>
                 </div>
-
-                <span>Notes goes here!</span>
 
                 //////////////////////////////////////////////////////////
 
@@ -127,6 +153,7 @@
                   <b-popover
                     target="popover-reactive-1"
                     triggers="click"
+                    size="lg"
                     :show.sync="popoverShow"
                     placement="bottom"
                     container="my-container"
