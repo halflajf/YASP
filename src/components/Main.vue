@@ -10,20 +10,26 @@
           hide-details
           label="Search"
           prepend-inner-icon=""
+          v-model="searchPhrase"
         ></v-text-field>
+        <button
+          style="border: 1px solid black; margin: 5px; padding: 5px"
+          v-on:click="searchNotes(searchPhrase)"
+        >
+          SEARCH
+        </button>
       </v-app-bar>
 
       <v-navigation-drawer v-model="drawer" app clipped color="grey lighten-4">
         <v-list dense class="grey lighten-4">
           <template v-for="(item, i) in items">
             <v-layout v-if="item.heading" :key="i" row align-center>
-              <v-flex xs6>
-                <v-subheader v-if="item.heading">
-                  {{ item.heading }}
-                </v-subheader>
-              </v-flex>
-              <v-flex xs6 class="text-xs-right">
-                <v-btn small text>edit</v-btn>
+              <v-flex> </v-flex>
+              <v-flex class="text-xs-right">
+                <div v-for="note in notes" :key="note.id">
+                  <span>Note: {{ note.id }}</span
+                  ><br />
+                </div>
               </v-flex>
             </v-layout>
             <v-divider
@@ -78,6 +84,7 @@
                         When created: {{ note.whenCreated }}<br />
                         When edited: {{ note.whenEdited }}<br />
                       </b-card-text>
+
                       <template v-slot:footer>
                         <small class="text-muted"
                           >Last updated 3 mins ago</small
@@ -104,10 +111,7 @@
                   </div>
 
                   <!-- Output from the popover interaction -->
-                  <b-card
-                    title="Returned values:"
-                    v-if="input1Return && input2Return"
-                  >
+                  <b-card title="Returned values:">
                     <p class="card-text" style="max-width: 20rem;">
                       Name: <strong>{{ input1Return }}</strong
                       ><br />
@@ -122,7 +126,7 @@
                     target="popover-reactive-1"
                     triggers="click"
                     :show.sync="popoverShow"
-                    placement="auto"
+                    placement="bottom"
                     container="my-container"
                     ref="popover"
                     @show="onShow"
@@ -147,15 +151,11 @@
                         label="Title"
                         label-for="popover-input-1"
                         label-cols="3"
-                        :state="input1state"
-                        class="mb-1"
-                        invalid-feedback="This field is required"
                       >
                         <b-form-input
                           ref="input1"
                           id="popover-input-1"
                           v-model="input1"
-                          :state="input1state"
                           size="sm"
                         ></b-form-input>
                       </b-form-group>
@@ -164,40 +164,15 @@
                         label="Content"
                         label-for="popover-input-2"
                         label-cols="3"
-                        :state="input1state"
-                        class="mb-2"
                       >
                         <b-form-input
                           ref="input2"
                           id="popover-input-2"
                           v-model="input2"
-                          :state="input2state"
                           size="sm"
                         >
                         </b-form-input>
                       </b-form-group>
-
-                      <!--
-        <b-form-group
-          label="Date"
-          label-for="datepicker-sm"
-          label-cols="3"
-          :state="input2state"
-          class="mb-2"
-          description="Pick a color"
-          invalid-feedback="This field is required"
-        >
-            <b-form-datepicker 
-              ref="input2"
-              v-model="input2"
-              id="datepicker-sm" 
-              size="sm" 
-              local="en" 
-              class="mb-2"
-              :state="input2state">            
-            </b-form-datepicker>
-        </b-form-group>
--->
 
                       <b-button @click="onClose" size="sm" variant="danger"
                         >Cancel</b-button
@@ -231,11 +206,11 @@ Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
 export default Vue.extend({
   name: "Main",
-
   data() {
     return {
       id: "",
       content: "",
+      tag: "",
       tags: "",
       searchPhrase: "",
       searchResult: [],
@@ -249,26 +224,13 @@ export default Vue.extend({
       ],
 
       input1: "",
-      input1state: null,
+
       input2: "",
-      input2state: null,
-      input1Return: "",
-      input2Return: "",
+
+      input1Return: " ",
+      input2Return: " ",
       popoverShow: false
     };
-  },
-
-  watch: {
-    input1(val) {
-      if (val) {
-        this.input1state = true;
-      }
-    },
-    input2(val) {
-      if (val) {
-        this.input2state = true;
-      }
-    }
   },
 
   computed: {
@@ -326,26 +288,17 @@ export default Vue.extend({
       this.popoverShow = false;
     },
     onOk() {
-      if (!this.input1) {
-        this.input1state = false;
-      }
-      if (!this.input2) {
-        this.input2state = false;
-      }
-      if (this.input1 && this.input2) {
-        this.onClose();
-        // Return our popover form results
-        this.input1Return = this.input1;
-        this.input2Return = this.input2;
-      }
+      this.onClose();
+      // Return our popover form results
+      this.input1Return = this.input1;
+      this.input2Return = this.input2;
     },
     onShow() {
       // This is called just before the popover is shown
       // Reset our popover form variables
       this.input1 = "";
       this.input2 = "";
-      this.input1state = null;
-      this.input2state = null;
+
       this.input1Return = "";
       this.input2Return = "";
     },
