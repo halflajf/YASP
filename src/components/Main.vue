@@ -11,7 +11,6 @@
           label="Search"
           prepend-inner-icon=""
         ></v-text-field>
-        <v-spacer></v-spacer>
       </v-app-bar>
 
       <v-navigation-drawer v-model="drawer" app clipped color="grey lighten-4">
@@ -47,74 +46,55 @@
         </v-list>
       </v-navigation-drawer>
 
-      <v-content>
-        <v-container fluid fill-height class="grey lighten-4">
-          <v-layout justify-center align-center>
-            <v-flex shrink>
-              <v-tooltip right>
-                <template v-slot:activator="{}">
-                  <button
-                    style="border: 1px solid black; margin: 5px; padding: 5px"
-                    v-on:click="commitNote(createNote())"
-                  >
-                    Add note
-                  </button>
+      <!-- <v-content> -->
+      <v-container fluid class="grey lighten-4">
+        <!-- <v-container fluid fill-height class="grey lighten-4"> -->
+        <div>
+          <br />
+          <br />
+          <b-button
+            block
+            top
+            color="brown"
+            v-on:click="commitNote(createNote())"
+          >
+            Add new note
+          </b-button>
+          <br />
+          <br />
+        </div>
+        <v-layout justify-center align-center>
+          <v-flex shrink>
+            <v-tooltip right>
+              <template v-slot:activator="{}">
+                <div>
+                  <b-card-group columns>
+                    <b-card v-for="note in notes" :key="note.id">
+                      <b-card-title> {{ note.title }}</b-card-title>
+                      <b-card-text>
+                        {{ note.content }} <br />
+                        ID: {{ note.id }}<br />
+                        Tags: {{ note.tags }}<br />
+                        When created: {{ note.whenCreated }}<br />
+                        When edited: {{ note.whenEdited }}<br />
+                      </b-card-text>
+                      <template v-slot:footer>
+                        <small class="text-muted"
+                          >Last updated 3 mins ago</small
+                        >
+                      </template>
+                    </b-card>
+                  </b-card-group>
+                </div>
 
-                  <div v-for="note in notes" :key="note.id">
-                    <span>Note</span><br />
-                    <span>Id: {{ note.id }}</span
-                    ><br />
-                    <span>Title: {{ note.title }}</span
-                    ><br />
-                    <span>Content: {{ note.content }}</span
-                    ><br />
-                    <span>Tags: {{ note.tags }}</span
-                    ><br />
-                    <span>When created: {{ note.whenCreated }}</span
-                    ><br />
-                    <span>When edited: {{ note.whenEdited }}</span
-                    ><br /><br />
-                  </div>
-                  <div>
-                    Search phrase:
-                    <input
-                      style="border: 1px solid black; margin: 5px"
-                      v-model="searchPhrase"
-                    /><br />
-                    <button
-                      style="border: 1px solid black; margin: 5px; padding: 5px"
-                      v-on:click="searchNotes(searchPhrase)"
-                    >
-                      Search in content and titles</button
-                    ><br />
+                <span>Notes goes here!</span>
+              </template>
+            </v-tooltip>
+          </v-flex>
+        </v-layout>
+      </v-container>
 
-                    <div>
-                      <b-card-group columns>
-                        <b-card v-for="note in searchResult" :key="note.id">
-                          <b-card-title> {{ note.title }}</b-card-title>
-                          <b-card-text>
-                            {{ note.content }} <br />
-                            ID: {{ note.id }}<br />
-                            Tags: {{ note.tags }}<br />
-                            When created: {{ note.whenCreated }}<br />
-                            When edited: {{ note.whenEdited }}<br />
-                          </b-card-text>
-                          <b-card-text class="small text-muted"
-                            >Last updated 3 mins ago</b-card-text
-                          >
-                        </b-card>
-                      </b-card-group>
-                    </div>
-                  </div>
-
-                  <span>Notes goes here!</span>
-                </template>
-              </v-tooltip>
-              <v-tooltip right> </v-tooltip>
-            </v-flex>
-          </v-layout>
-        </v-container>
-      </v-content>
+      <!-- </v-content> -->
     </v-app>
   </div>
 </template>
