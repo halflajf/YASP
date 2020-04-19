@@ -1,19 +1,21 @@
 <template>
   <div id="app">
     <v-app id="inspire">
-      <v-app-bar app clipped-left color="#A0522D">
+      <v-app-bar app clipped-left color="#ece5d3">
         <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-        <span class="title ml-3 mr-5">YASP</span>
+        <span class="title ml-3 mr-5"
+          ><img height="25px" src="../assets/yasp_logo.png"
+        /></span>
+
         <v-text-field
           solo-inverted
           flat
           hide-details
           label="Search"
-          prepend-inner-icon=""
           v-model="searchPhrase"
         ></v-text-field>
         <button
-          style="border: 1px solid black; margin: 5px; padding: 5px"
+          style="border: 1px solid black; margin: 5px; padding: 5px;"
           v-on:click="searchNotes(searchPhrase)"
         >
           SEARCH
@@ -111,7 +113,7 @@
                   </div>
 
                   <!-- Output from the popover interaction -->
-                  <b-card title="Returned values:">
+                  <b-card title="Podgląd nowej notatki:">
                     <p class="card-text" style="max-width: 20rem;">
                       Name: <strong>{{ input1Return }}</strong
                       ><br />
