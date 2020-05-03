@@ -1,6 +1,11 @@
 # Yasp
 Yet another stupid project
 
+Yasp is a modern single-page application (SPA) website which lets users from all around the globe write down their notes. Yasp offers fluid yet intuitive user experience for all of your personal notes.
+
+Under the hood YASP is a vue.js application that relies on [jsonbin.io](https://jsonbin.io) as storage medium. 
+See more at [our website](https://halflajf.github.com/Yasp)!
+
 ## Project setup
 ```
 npm install
